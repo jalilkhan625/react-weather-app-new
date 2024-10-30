@@ -26,3 +26,6 @@ h1, h3 {
   justify-content: space-between;
   align-items: center;
 }
+.mt-3 {
+  margin-top: 1rem; /* Adjust as needed */
+}

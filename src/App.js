@@ -1,8 +1,13 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import WeatherSearch from './components/WeatherSearch';
 import WeatherResult from './components/WeatherResult';
 import FavoritesList from './components/FavoritesList';
 import TemperatureChart from './components/TemperatureChart';
+import { ReactComponent as CloudyIcon } from './components/icons/cloudy.svg';
+import { ReactComponent as RainyIcon } from './components/icons/rainy.svg';
+import { ReactComponent as SnowyIcon } from './components/icons/snowy.svg';
+import { ReactComponent as ThunderIcon } from './components/icons/thunder.svg';
+import { ReactComponent as SunnyIcon } from './components/icons/sunny.svg'; // Import the sunny icon
 
 function App() {
   const [weather, setWeather] = useState(null);
@@ -24,10 +29,13 @@ function App() {
     const weatherData = await weatherResponse.json();
 
     const currentWeather = weatherData.current_weather;
+    const { label, Icon } = getWeatherCondition(currentWeather.weathercode);
+
     setWeather({
       name,
       temperature: currentWeather.temperature,
-      condition: getWeatherCondition(currentWeather.weathercode),
+      condition: label,
+      Icon, // Add the icon component here
       humidity: currentWeather.humidity,
       windSpeed: currentWeather.windspeed,
     });
@@ -56,25 +64,44 @@ function App() {
 
   const getWeatherCondition = (code) => {
     const conditions = {
-      0: 'Clear sky',
-      1: 'Mainly clear',
-      2: 'Partly cloudy',
-      3: 'Overcast',
+      0: { label: 'Clear sky', Icon: SunnyIcon }, // Assuming this is the sunny condition
+      1: { label: 'Mainly clear', Icon: CloudyIcon },
+      2: { label: 'Partly cloudy', Icon: CloudyIcon },
+      3: { label: 'Overcast', Icon: CloudyIcon },
+      4: { label: 'Rainy', Icon: RainyIcon },
+      5: { label: 'Snowy', Icon: SnowyIcon },
+      6: { label: 'Thunder', Icon: ThunderIcon },
+      7: { label: 'Sunny', Icon: SunnyIcon }, // Add this line for sunny weather
     };
-    return conditions[code] || 'Unknown condition';
+
+    return conditions[code] || { label: 'Unknown condition', Icon: CloudyIcon }; // Default to cloudy icon
   };
 
   return (
     <div className="container mt-5">
       <h1 className="text-center mb-4">Weather App</h1>
       <WeatherSearch fetchWeatherData={fetchWeatherData} />
-      {weather && <WeatherResult weather={weather} addCityToFavorites={addCityToFavorites} />}
+      <div className="row mt-4 d-flex align-items-stretch">
+        {weather && (
+          <>
+            <div className="col-md-5"> {/* WeatherResult occupies 40% of the width */}
+              <div className="border p-3 rounded h-100">
+                <WeatherResult weather={weather} addCityToFavorites={addCityToFavorites} />
+              </div>
+            </div>
+            <div className="col-md-7"> {/* TemperatureChart occupies 60% of the width */}
+              <div className="border p-3 rounded h-100">
+                {temperatureData.length > 0 && <TemperatureChart temperatureData={temperatureData} />}
+              </div>
+            </div>
+          </>
+        )}
+      </div>
       <FavoritesList
         favorites={favorites}
         removeCityFromFavorites={removeCityFromFavorites}
         sortFavoritesByTemperature={sortFavoritesByTemperature}
       />
-      {temperatureData.length > 0 && <TemperatureChart temperatureData={temperatureData} />}
     </div>
   );
 }

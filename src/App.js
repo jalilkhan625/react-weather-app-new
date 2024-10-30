@@ -7,40 +7,46 @@ import { ReactComponent as CloudyIcon } from './components/icons/cloudy.svg';
 import { ReactComponent as RainyIcon } from './components/icons/rainy.svg';
 import { ReactComponent as SnowyIcon } from './components/icons/snowy.svg';
 import { ReactComponent as ThunderIcon } from './components/icons/thunder.svg';
-import { ReactComponent as SunnyIcon } from './components/icons/sunny.svg'; // Import the sunny icon
+import { ReactComponent as SunnyIcon } from './components/icons/sunny.svg';
 
 function App() {
   const [weather, setWeather] = useState(null);
   const [favorites, setFavorites] = useState(JSON.parse(localStorage.getItem('favoriteCities')) || []);
   const [temperatureData, setTemperatureData] = useState([]);
+  const [isAddedToFavorites, setIsAddedToFavorites] = useState(false);
 
   const fetchWeatherData = async (city) => {
-    // Fetch geolocation data
-    const geoResponse = await fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${city}`);
-    const geoData = await geoResponse.json();
+    try {
+      const geoResponse = await fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${city}`);
+      const geoData = await geoResponse.json();
 
-    if (geoData.results.length === 0) {
-      alert('City not found. Please try again.');
-      return;
+      if (!geoData.results || geoData.results.length === 0) {
+        alert('City not found. Please try again.');
+        return;
+      }
+
+      const { latitude, longitude, name } = geoData.results[0];
+      const weatherResponse = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current_weather=true&hourly=temperature_2m`);
+      const weatherData = await weatherResponse.json();
+
+      const currentWeather = weatherData.current_weather;
+      const { label, Icon } = getWeatherCondition(currentWeather.weathercode);
+
+      setWeather({
+        name,
+        temperature: currentWeather.temperature,
+        condition: label,
+        Icon,
+        humidity: currentWeather.humidity,
+        windSpeed: currentWeather.windspeed,
+      });
+
+      setTemperatureData(weatherData.hourly.temperature_2m);
+      setIsAddedToFavorites(false);
+    } catch (error) {
+      console.error("Error fetching weather data:", error);
+      alert("An error occurred while fetching weather data. Please try again later.");
     }
-
-    const { latitude, longitude, name } = geoData.results[0];
-    const weatherResponse = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current_weather=true&hourly=temperature_2m`);
-    const weatherData = await weatherResponse.json();
-
-    const currentWeather = weatherData.current_weather;
-    const { label, Icon } = getWeatherCondition(currentWeather.weathercode);
-
-    setWeather({
-      name,
-      temperature: currentWeather.temperature,
-      condition: label,
-      Icon, // Add the icon component here
-      humidity: currentWeather.humidity,
-      windSpeed: currentWeather.windspeed,
-    });
-
-    setTemperatureData(weatherData.hourly.temperature_2m);
   };
 
   const addCityToFavorites = (city) => {
@@ -48,6 +54,7 @@ function App() {
       const newFavorites = [...favorites, city];
       setFavorites(newFavorites);
       localStorage.setItem('favoriteCities', JSON.stringify(newFavorites));
+      setIsAddedToFavorites(true);
     }
   };
 
@@ -64,17 +71,17 @@ function App() {
 
   const getWeatherCondition = (code) => {
     const conditions = {
-      0: { label: 'Clear sky', Icon: SunnyIcon }, // Assuming this is the sunny condition
-      1: { label: 'Mainly clear', Icon: CloudyIcon },
+      0: { label: 'Clear sky', Icon: SunnyIcon },
+      1: { label: 'Mainly clear', Icon: SunnyIcon },
       2: { label: 'Partly cloudy', Icon: CloudyIcon },
       3: { label: 'Overcast', Icon: CloudyIcon },
       4: { label: 'Rainy', Icon: RainyIcon },
       5: { label: 'Snowy', Icon: SnowyIcon },
       6: { label: 'Thunder', Icon: ThunderIcon },
-      7: { label: 'Sunny', Icon: SunnyIcon }, // Add this line for sunny weather
+      7: { label: 'Sunny', Icon: SunnyIcon },
     };
 
-    return conditions[code] || { label: 'Unknown condition', Icon: CloudyIcon }; // Default to cloudy icon
+    return conditions[code] || { label: 'Unknown condition', Icon: CloudyIcon };
   };
 
   return (
@@ -84,12 +91,16 @@ function App() {
       <div className="row mt-4 d-flex align-items-stretch">
         {weather && (
           <>
-            <div className="col-md-5"> {/* WeatherResult occupies 40% of the width */}
+            <div className="col-md-5">
               <div className="border p-3 rounded h-100">
-                <WeatherResult weather={weather} addCityToFavorites={addCityToFavorites} />
+                <WeatherResult
+                  weather={weather}
+                  addCityToFavorites={addCityToFavorites}
+                  isAddedToFavorites={isAddedToFavorites}
+                />
               </div>
             </div>
-            <div className="col-md-7"> {/* TemperatureChart occupies 60% of the width */}
+            <div className="col-md-7">
               <div className="border p-3 rounded h-100">
                 {temperatureData.length > 0 && <TemperatureChart temperatureData={temperatureData} />}
               </div>

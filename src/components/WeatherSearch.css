@@ -1,0 +1,9 @@
+
+.search-input {
+  width: 20%; /* Take the full available width */
+  min-width: 10px; /* Set a minimum width if desired */
+}
+
+.search-button {
+  width: 80px; /* Fixed width for the button */
+}

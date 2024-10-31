@@ -45,6 +45,7 @@ function App() {
       setIsAddedToFavorites(false);
     } catch (error) {
       console.error("Error fetching weather data:", error);
+      console.error("Error fetching weather data:", error);
       alert("An error occurred while fetching weather data. Please try again later.");
     }
   };

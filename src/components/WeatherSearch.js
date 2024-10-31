@@ -8,7 +8,7 @@ const WeatherSearch = ({ fetchWeatherData }) => {
     if (city) {
       fetchWeatherData(city);
     } else {
-      alert('Please enter a city name.');
+      alert('Per favore, inserisci un nome di città.'); // Alert message in Italian
     }
   };
 
@@ -21,9 +21,11 @@ const WeatherSearch = ({ fetchWeatherData }) => {
             value={city}
             onChange={(e) => setCity(e.target.value)}
             className="form-control search-input"
-            placeholder="Enter a city name"
+            placeholder="Inserisci il nome di una città" // Placeholder in Italian
           />
-          <button onClick={handleSearch} className="btn btn-primary search-button">Search</button>
+          <button onClick={handleSearch} className="btn btn-primary search-button">
+            Cerca {/* Button text in Italian */}
+          </button>
         </div>
       </div>
     </div>

@@ -21,7 +21,7 @@ function App() {
       const geoData = await geoResponse.json();
 
       if (!geoData.results || geoData.results.length === 0) {
-        alert('City not found. Please try again.');
+        alert('Città non trovata. Riprova.');
         return;
       }
 
@@ -44,9 +44,8 @@ function App() {
       setTemperatureData(weatherData.hourly.temperature_2m);
       setIsAddedToFavorites(false);
     } catch (error) {
-      console.error("Error fetching weather data:", error);
-      console.error("Error fetching weather data:", error);
-      alert("An error occurred while fetching weather data. Please try again later.");
+      console.error("Errore durante il recupero dei dati meteo:", error);
+      alert("Si è verificato un errore durante il recupero dei dati meteo. Riprova più tardi.");
     }
   };
 
@@ -72,28 +71,29 @@ function App() {
 
   const getWeatherCondition = (code) => {
     const conditions = {
-      0: { label: 'Clear sky', Icon: SunnyIcon },
-      1: { label: 'Mainly clear', Icon: SunnyIcon },
-      2: { label: 'Partly cloudy', Icon: CloudyIcon },
-      3: { label: 'Overcast', Icon: CloudyIcon },
-      4: { label: 'Rainy', Icon: RainyIcon },
-      5: { label: 'Snowy', Icon: SnowyIcon },
-      6: { label: 'Thunder', Icon: ThunderIcon },
-      7: { label: 'Sunny', Icon: SunnyIcon },
+      0: { label: 'Cielo sereno', Icon: SunnyIcon },
+      1: { label: 'Principalmente sereno', Icon: SunnyIcon },
+      2: { label: 'Parzialmente nuvoloso', Icon: CloudyIcon },
+      3: { label: 'Nuvoloso', Icon: CloudyIcon },
+      4: { label: 'Piovoso', Icon: RainyIcon },
+      5: { label: 'Nevoso', Icon: SnowyIcon },
+      6: { label: 'Temporale', Icon: ThunderIcon },
+      7: { label: 'Soleggiato', Icon: SunnyIcon },
     };
 
-    return conditions[code] || { label: 'Unknown condition', Icon: CloudyIcon };
+    return conditions[code] || { label: 'Condizione sconosciuta', Icon: CloudyIcon };
   };
 
   return (
     <div className="container mt-5">
-      <h1 className="text-center mb-4">Weather App</h1>
+      <h1 className="text-center mb-4">App Meteo</h1>
       <WeatherSearch fetchWeatherData={fetchWeatherData} />
-      <div className="row mt-4 d-flex align-items-stretch">
+      <div className="row mt-4 g-4 d-flex align-items-stretch"> {/* Added g-4 for gaps */}
         {weather && (
           <>
             <div className="col-md-5">
               <div className="border p-3 rounded h-100">
+                <h4 className="text-center">Meteo Attuale</h4>
                 <WeatherResult
                   weather={weather}
                   addCityToFavorites={addCityToFavorites}
@@ -103,6 +103,7 @@ function App() {
             </div>
             <div className="col-md-7">
               <div className="border p-3 rounded h-100">
+                <h4 className="text-center">Andamento della Temperatura nelle Ultime 24 Ore</h4>
                 {temperatureData.length > 0 && <TemperatureChart temperatureData={temperatureData} />}
               </div>
             </div>

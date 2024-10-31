@@ -13,8 +13,8 @@ const WeatherResult = ({ weather, loading, error, addCityToFavorites, isAddedToF
     setIsCurrentlyAddedToFavorites(true);
   };
 
-  if (loading) return <p>Loading...</p>;
-  if (error) return <p>Error loading weather data. Please try again.</p>;
+  if (loading) return <p>Caricamento...</p>; // Loading in Italian
+  if (error) return <p>Errore nel caricamento dei dati meteorologici. Per favore riprova.</p>; // Error message in Italian
   if (!weather) return null;
 
   const { name, temperature, condition, humidity, windSpeed, Icon } = weather;
@@ -29,10 +29,10 @@ const WeatherResult = ({ weather, loading, error, addCityToFavorites, isAddedToF
       <div className="card mb-3 weather-result-card" style={{ border: 'none' }}>
         <div className="p-2 d-flex justify-content-between" style={{ textAlign: 'left' }}>
           <div className="weather-info" style={{ flex: '1' }}>
-            <p><strong>Temperature:</strong> {temperature}°C</p>
-            <p><strong>Weather:</strong> {condition}</p>
-            <p><strong>Humidity:</strong> {humidity}%</p>
-            <p><strong>Wind Speed:</strong> {windSpeed} m/s</p>
+            <p><strong>Temperatura:</strong> {temperature}°C</p> {/* Temperature in Italian */}
+            <p><strong>Meteo:</strong> {condition}</p> {/* Weather in Italian */}
+            <p><strong>Umidità:</strong> {humidity}%</p> {/* Humidity in Italian */}
+            <p><strong>Velocità del Vento:</strong> {windSpeed} m/s</p> {/* Wind Speed in Italian */}
           </div>
 
           <div className="right-box" style={{ 
@@ -68,10 +68,10 @@ const WeatherResult = ({ weather, loading, error, addCityToFavorites, isAddedToF
               onClick={handleAddToFavorites} 
               className={`btn btn-secondary ${isCurrentlyAddedToFavorites ? 'blur' : ''}`} 
               disabled={isCurrentlyAddedToFavorites} 
-              aria-label={isCurrentlyAddedToFavorites ? 'City added to favorites' : 'Add city to favorites'}
+              aria-label={isCurrentlyAddedToFavorites ? 'Città aggiunta ai preferiti' : 'Aggiungi città ai preferiti'} // Button label in Italian
             >
-              <span role="img" aria-label="Add to favorites">❤️</span>
-              {isCurrentlyAddedToFavorites ? 'Added to Favorites' : 'Add to Favorites'}
+              <span role="img" aria-label="Aggiungi ai preferiti">🤍</span>
+              {isCurrentlyAddedToFavorites ? 'Aggiunto ai Preferiti' : 'Aggiungi ai Preferiti'} 
             </button>
           </div>
         </div>

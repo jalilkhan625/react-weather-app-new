@@ -3,54 +3,102 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSort, faTrash } from '@fortawesome/free-solid-svg-icons';
 
 const FavoritesList = ({ favorites, removeCityFromFavorites }) => {
-  const [sortOrder, setSortOrder] = useState('asc'); // Initialize sort order state
-  const [currentPage, setCurrentPage] = useState(1); // Initialize current page
-  const itemsPerPage = 9; // Set the number of items per page
+  const [sortOrder, setSortOrder] = useState('asc');
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 9;
 
   const sortFavoritesByTemperature = () => {
-    // Toggle between ascending and descending sort order
     setSortOrder(prevOrder => (prevOrder === 'asc' ? 'desc' : 'asc'));
   };
 
-  // Sort favorites based on current sort order
   const sortedFavorites = [...favorites].sort((a, b) => {
     return sortOrder === 'asc' ? a.temperature - b.temperature : b.temperature - a.temperature;
   });
 
-  // Calculate the index of the last item and the first item on the current page
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-
-  // Slice the sorted favorites array to get only the items for the current page
   const currentFavorites = sortedFavorites.slice(indexOfFirstItem, indexOfLastItem);
-
-  // Calculate total pages
   const totalPages = Math.ceil(sortedFavorites.length / itemsPerPage);
 
   return (
     <div>
-      <button onClick={sortFavoritesByTemperature} className="btn btn-outline-primary mb-3 mt-3">
-        <FontAwesomeIcon icon={faSort} className="me-2" />
+      <button
+        onClick={sortFavoritesByTemperature}
+        style={{
+          backgroundColor: 'transparent',
+          color: '#4CAF50',
+          border: '2px solid #4CAF50',
+          padding: '10px 20px',
+          borderRadius: '25px',
+          cursor: 'pointer',
+          fontWeight: 'bold',
+          marginBottom: '20px',
+          marginTop: '20px',
+          transition: 'background-color 0.3s, color 0.3s',
+        }}
+        onMouseEnter={(e) => {
+          e.target.style.backgroundColor = '#4CAF50';
+          e.target.style.color = 'white';
+        }}
+        onMouseLeave={(e) => {
+          e.target.style.backgroundColor = 'transparent';
+          e.target.style.color = '#4CAF50';
+        }}
+      >
+        <FontAwesomeIcon icon={faSort} style={{ marginRight: '8px' }} />
         Ordina per Temperatura
       </button>
-      <div className="row">
+      <div style={{
+        display: 'grid',
+        gridTemplateColumns: 'repeat(auto-fill, minmax(250px, 1fr))',
+        gap: '20px',
+      }}>
         {currentFavorites.map(city => (
-          <div key={city.name} className="col-md-4 mb-4">
-            <div className="card">
-              <div className="card-body d-flex flex-column">
-                <h5 className="card-title">{city.name}</h5>
-                <p className="card-text">
-                  Temperatura: {city.temperature}°C<br />
-                  Meteo: {city.condition}<br />
-                  Umidità: {city.humidity}%<br />
-                  Velocità del Vento: {city.windSpeed} km/h
-                </p>
-                <div className="mt-auto text-end"> {/* Added classes for alignment */}
-                  <button className="btn btn-danger" onClick={() => removeCityFromFavorites(city.name)}>
-                    <FontAwesomeIcon icon={faTrash} className="me-2" />
-                    Rimuovi
-                  </button>
-                </div>
+          <div key={city.name} style={{
+            backgroundColor: '#f7f9fc',
+            border: 'none',
+            borderRadius: '15px',
+            boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
+            transition: 'transform 0.3s',
+          }}
+            onMouseEnter={(e) => e.currentTarget.style.transform = 'translateY(-5px)'}
+            onMouseLeave={(e) => e.currentTarget.style.transform = 'translateY(0)'}
+          >
+            <div className="card-body d-flex flex-column" style={{ padding: '15px' }}>
+              <h5 style={{
+                color: '#333',
+                fontSize: '1.2em',
+                fontWeight: 'bold',
+                marginBottom: '10px',
+              }}>{city.name}</h5>
+              <p style={{
+                color: '#555',
+                marginBottom: 'auto',
+              }}>
+                <span style={{ fontWeight: 600, color: '#4CAF50' }}>Temperatura:</span> {city.temperature}°C<br />
+                <span style={{ fontWeight: 600, color: '#4CAF50' }}>Meteo:</span> {city.condition}<br />
+                <span style={{ fontWeight: 600, color: '#4CAF50' }}>Umidità:</span> {city.humidity}%<br />
+                <span style={{ fontWeight: 600, color: '#4CAF50' }}>Velocità del Vento:</span> {city.windSpeed} km/h
+              </p>
+              <div style={{ marginTop: 'auto', textAlign: 'right' }}>
+                <button
+                  onClick={() => removeCityFromFavorites(city.name)}
+                  style={{
+                    backgroundColor: '#ff4d4d',
+                    color: 'white',
+                    border: 'none',
+                    padding: '6px 12px',
+                    borderRadius: '5px',
+                    fontSize: '0.9em',
+                    cursor: 'pointer',
+                    transition: 'background-color 0.3s',
+                  }}
+                  onMouseEnter={(e) => e.target.style.backgroundColor = '#e60000'}
+                  onMouseLeave={(e) => e.target.style.backgroundColor = '#ff4d4d'}
+                >
+                  <FontAwesomeIcon icon={faTrash} style={{ marginRight: '2px' }} />
+                  
+                </button>
               </div>
             </div>
           </div>
@@ -58,26 +106,46 @@ const FavoritesList = ({ favorites, removeCityFromFavorites }) => {
       </div>
 
       {/* Pagination Controls */}
-      <div className="d-flex justify-content-between mt-4">
-        <button 
-          onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))} 
+      <div style={{
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        gap: '10px',
+        marginTop: '20px',
+      }}>
+        <button
+          onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
           disabled={currentPage === 1}
-          className="btn btn-outline-secondary"
+          style={{
+            backgroundColor: currentPage === 1 ? '#ccc' : '#007bff',
+            color: 'white',
+            border: 'none',
+            padding: '8px 16px',
+            borderRadius: '5px',
+            cursor: currentPage === 1 ? 'not-allowed' : 'pointer',
+            transition: 'background-color 0.3s',
+          }}
         >
           Previous
         </button>
-        <button 
-          onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))} 
+        <span style={{ fontWeight: 'bold', color: '#333' }}>
+          Pagina {currentPage} di {totalPages}
+        </span>
+        <button
+          onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
           disabled={currentPage === totalPages}
-          className="btn btn-outline-secondary"
+          style={{
+            backgroundColor: currentPage === totalPages ? '#ccc' : '#007bff',
+            color: 'white',
+            border: 'none',
+            padding: '8px 16px',
+            borderRadius: '5px',
+            cursor: currentPage === totalPages ? 'not-allowed' : 'pointer',
+            transition: 'background-color 0.3s',
+          }}
         >
           Next
         </button>
-      </div>
-
-      {/* Optional: Show current page information */}
-      <div className="text-center mt-2">
-        <p>Pagina {currentPage} di {totalPages}</p>
       </div>
     </div>
   );

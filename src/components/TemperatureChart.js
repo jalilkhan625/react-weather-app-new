@@ -19,41 +19,90 @@ const TemperatureChart = ({ temperatureData }) => {
       data: {
         labels,
         datasets: [{
-          label: 'Temperature (°C)',
+          label: 'Temperatura (°C)',
           data: temperatureData.slice(0, 24),
-          borderColor: 'rgb(75, 192, 192)',
-          tension: 0.3,
-          fill: false,
+          borderColor: 'rgba(54, 162, 235, 1)',
+          backgroundColor: 'rgba(54, 162, 235, 0.2)',
+          tension: 0.4,
+          pointRadius: 6,
+          pointHoverRadius: 8,
+          pointBackgroundColor: 'rgba(54, 162, 235, 1)',
+          pointBorderColor: '#fff',
+          borderWidth: 2,
+          fill: true,
         }]
       },
       options: {
         responsive: true,
+        maintainAspectRatio: false,
         plugins: {
           legend: {
             display: true,
             position: 'top',
+            labels: {
+              font: {
+                size: 16,
+                weight: 'bold',
+              },
+              color: '#333'
+            },
           },
         },
         scales: {
           x: {
             title: {
               display: true,
-              text: 'Ora del Giorno', // x-axis label in Italian
-            }
+              text: 'Ora del Giorno',
+              color: '#666',
+              font: {
+                size: 14,
+                weight: 'bold',
+              },
+            },
+            ticks: {
+              color: '#333',
+              font: {
+                size: 12,
+              },
+            },
+            grid: {
+              color: 'rgba(200, 200, 200, 0.2)',
+              lineWidth: 1,
+            },
           },
           y: {
             title: {
               display: true,
-              text: 'Temperatura (°C)', // y-axis label in Italian
+              text: 'Temperatura (°C)',
+              color: '#666',
+              font: {
+                size: 14,
+                weight: 'bold',
+              },
             },
-            beginAtZero: true, // Optional: start y-axis at zero
+            ticks: {
+              color: '#333',
+              font: {
+                size: 12,
+              },
+            },
+            grid: {
+              color: 'rgba(200, 200, 200, 0.2)',
+              lineWidth: 1,
+            },
+            beginAtZero: true,
           }
         }
       }
     });
   }, [temperatureData]);
 
-  return <canvas ref={chartRef}></canvas>;
+  return (
+    <div style={{ maxWidth: '1300px', margin: '0 auto', padding: '20px', backgroundColor: '#f8f9fa', borderRadius: '8px', boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.1)', overflow: 'hidden' }}>
+      <h2 style={{ textAlign: 'center', marginBottom: '20px', color: '#333', fontSize: '1.8rem' }}>Andamento della Temperatura</h2>
+      <canvas ref={chartRef} style={{ width: '100%', height: '400px', maxHeight: '400px' }}></canvas>
+    </div>
+  );
 };
 
 export default TemperatureChart;

@@ -8,6 +8,7 @@ import { ReactComponent as RainyIcon } from './components/icons/rainy.svg';
 import { ReactComponent as SnowyIcon } from './components/icons/snowy.svg';
 import { ReactComponent as ThunderIcon } from './components/icons/thunder.svg';
 import { ReactComponent as SunnyIcon } from './components/icons/sunny.svg';
+import './App.css'; // Make sure to import your CSS file
 
 function App() {
   const [weather, setWeather] = useState(null);
@@ -88,26 +89,29 @@ function App() {
     <div className="container mt-5">
       <h1 className="text-center mb-4">App Meteo</h1>
       <WeatherSearch fetchWeatherData={fetchWeatherData} />
-      <div className="row mt-4 g-4 d-flex align-items-stretch"> {/* Added g-4 for gaps */}
+      <div className="row mt-4 g-4 d-flex justify-content-center">
         {weather && (
-          <>
-            <div className="col-md-5">
-              <div className="border p-3 rounded h-100">
-                <h4 className="text-center">Meteo Attuale</h4>
-                <WeatherResult
-                  weather={weather}
-                  addCityToFavorites={addCityToFavorites}
-                  isAddedToFavorites={isAddedToFavorites}
-                />
-              </div>
+          <div className="col-md-5 col-12"> {/* Responsive column */}
+            <div className="p-3 rounded h-100 weather-card"> {/* Apply weather card class */}
+              <h4 className="text-center">Meteo Attuale</h4>
+              <WeatherResult
+                weather={weather}
+                addCityToFavorites={addCityToFavorites}
+                isAddedToFavorites={isAddedToFavorites}
+              />
             </div>
-            <div className="col-md-7">
-              <div className="border p-3 rounded h-100">
-                <h4 className="text-center">Andamento della Temperatura nelle Ultime 24 Ore</h4>
-                {temperatureData.length > 0 && <TemperatureChart temperatureData={temperatureData} />}
-              </div>
+          </div>
+        )}
+      </div>
+      {/* New row for the Temperature Chart */}
+      <div className="row mt-4">
+        {temperatureData.length > 0 && (
+          <div className="col-12">
+            <div className="p-3 rounded temperature-chart"> {/* Apply temperature chart class */}
+              <h4 className="text-center">Andamento della Temperatura nelle Ultime 24 Ore</h4>
+              <TemperatureChart temperatureData={temperatureData} />
             </div>
-          </>
+          </div>
         )}
       </div>
       <FavoritesList
